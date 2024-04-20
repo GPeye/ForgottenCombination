@@ -40,7 +40,7 @@ void InitGame(PlaydateAPI* pd)
 
     initLockSceneData();
 
-	sound->fileplayer->play(Game.musicPlayer, 0);
+	//sound->fileplayer->play(Game.musicPlayer, 0);
 }
 
 int Update(void* userdata) {
