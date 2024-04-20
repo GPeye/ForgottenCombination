@@ -48,17 +48,17 @@ static void drawKnob(void) {
         sound->sampleplayer->play(Game.mSamplePlayer, 1, 1.f);
 
         switch (knobIndex) {
-            case 0:
-                currentKnob = knob3bitmap;
-                knobIndex++;
+            case 2:
+                currentKnob = knob2bitmap;
+                knobIndex--;
                 break;
             case 1:
-                currentKnob = knob2bitmap;
-                knobIndex++;
+                currentKnob = knob3bitmap;
+                knobIndex--;
                 break;
-            case 2:
+            case 0:
                 currentKnob = knob1bitmap;
-                knobIndex=0;
+                knobIndex=2;
                 break;
         }
     }
@@ -78,7 +78,7 @@ static void handleCrankRotate(void) {
     angle = sys->getCrankAngle();
     crankMovement += sys->getCrankChange();
 
-    if (crankMovement > 5.f || crankMovement < 0.f) {
+    if (crankMovement > 5.f || crankMovement < -5.f) {
         crankMovement = 0.f;
         changeKnob = 1;
     }
