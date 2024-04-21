@@ -35,4 +35,6 @@ void SetNumber(int number);
 
 void DrawLock(Lock* lock);
 
+void UpdateLock(Lock* lock);
+
 #endif

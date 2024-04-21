@@ -7,17 +7,6 @@ Unlock controls the level / tells the lock what to do / reacts to changes in sta
 
 */
 
-
-#define SCREEN_WIDTH_CENTER 200
-#define SCREEN_HEIGHT_CENTER 120
-
-static int changeKnob = 0;
-static float crankMovement = 0.f;
-
-static float targetAngle = 45.f;
-
-static float angle = 0.f;
-
 Lock lock;
 
 void initLockSceneData(void) {
@@ -41,8 +30,9 @@ static void handleCrankRotate(void) {
 
 void updateUnlock(void) {
     //drawBG();
-    DrawLock(&lock);
     handleCrankRotate();
+    DrawLock(&lock);
+    UpdateLock(&lock);
     //drawKnob();
     //drawFace();
 }

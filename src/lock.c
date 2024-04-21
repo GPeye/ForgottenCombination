@@ -1,5 +1,6 @@
 #include "lock.h"
 #include "game.h"
+#include "time.h"
 
 LCDBitmap* bgbitmap;
 LCDBitmap* lockbitmap;
@@ -18,6 +19,11 @@ AudioSample* hitick;
 AudioSample* extratick;
 
 static float angle = 0.f;
+static int knobShouldChange = 0;
+static int playClick = 0;
+static float movement = 0.f;
+static int currentNumberOnDial = 0;
+static int targetNumber = 35;
 
 void InitLock(Lock* lock)
 {
@@ -42,7 +48,7 @@ void InitLock(Lock* lock)
         sys->logToConsole("failed to load extratick");
     }
 
-    srand(time(NULL));
+    srand(sys->getCurrentTimeMilliseconds);
 }
 
 void GenerateNewCodes(Lock* lock, int numberOfCodes)
@@ -56,7 +62,6 @@ void GenerateNewCodes(Lock* lock, int numberOfCodes)
         else {
             lock->code[i] = 0;
         }
-        sys->logToConsole("%d ", lock->code[i]);
     }
 
 }
@@ -65,6 +70,7 @@ void GenerateNewCodes(Lock* lock, int numberOfCodes)
 static void drawBG(void) {
     gfx->drawBitmap(bgbitmap, 0, 0, kBitmapUnflipped);
     gfx->fillEllipse(SCREEN_WIDTH_CENTER - 107, SCREEN_HEIGHT_CENTER - 107, 214, 214, 0.f, 0.f, kColorBlack);
+    gfx->fillTriangle(210,0,190,0,200,10,kColorWhite);
 }
 
 static void drawFace(void) {
@@ -73,22 +79,8 @@ static void drawFace(void) {
 
 static int knobIndex = 0;
 static void drawKnob(void) {
-    if (changeKnob > 0) {
-        changeKnob = 0;
-
-        float diff = fabsf(fmod(targetAngle - angle, 360.f));
-
-        if (diff < 3.f) {
-            sound->sampleplayer->setSample(Game.mSamplePlayer, hitick);
-            sound->sampleplayer->play(Game.mSamplePlayer, 1, 1.f);
-            //sound->sampleplayer->setSample(Game.mSamplePlayer, extratick);
-            //sound->sampleplayer->play(Game.mSamplePlayer, 1, 1.f);
-        }
-        else {
-            sound->sampleplayer->setSample(Game.mSamplePlayer, extratick);
-            sound->sampleplayer->play(Game.mSamplePlayer, 1, 1.f);
-        }
-
+    if (knobShouldChange > 0) {
+        knobShouldChange = 0;
 
         switch (knobIndex) {
         case 2:
@@ -112,13 +104,51 @@ void SetLockAngle(float a) {
     angle = a;
 }
 
-void SetLockAngleChange(float a)
-{
+void SetLockAngleChange(float a) {
+    movement += a;
 
+    if (movement > 9.f) {
+        movement -= 9.f;
+        knobShouldChange = 1;
+        playClick = 1;
+    } else if (movement <= 0.f) {
+        movement += 9.f;
+        knobShouldChange = -1;
+        playClick = 1;
+    }
 }
 
-void DrawLock(Lock* lock)
-{
+static void playSound(void) {
+    if(playClick > 0) {
+        playClick = 0;
+
+        if (currentNumberOnDial == targetNumber) {
+            sound->sampleplayer->setSample(Game.mSamplePlayer, hitick);
+            sound->sampleplayer->play(Game.mSamplePlayer, 1, 1.f);
+            //sound->sampleplayer->setSample(Game.mSamplePlayer, extratick);
+            //sound->sampleplayer->play(Game.mSamplePlayer, 1, 1.f);
+        }
+        else {
+            sound->sampleplayer->setSample(Game.mSamplePlayer, extratick);
+            sound->sampleplayer->play(Game.mSamplePlayer, 1, 1.f);
+        }
+    }
+}
+
+static getCurrentNumber(){
+    float num = 40.f - (angle / 9.f);
+    sys->logToConsole("%d",(int)round(num));
+    currentNumberOnDial = (int)round(num);
+}
+
+void DrawLock(Lock* lock) {
     drawBG();
     drawFace();
+    drawKnob();
+}
+
+void UpdateLock(Lock* lock) {
+    playSound();
+
+    getCurrentNumber();
 }
