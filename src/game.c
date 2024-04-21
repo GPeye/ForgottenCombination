@@ -13,7 +13,7 @@ GameStruct Game;
 AudioSample* music;
 
 static void initFonts(void) {
-    const char* fontpath = "/System/Fonts/Asheville-Sans-14-Bold.pft";
+    const char* fontpath = "fonts/midnight45";
     const char* err;
 	Game.font = gfx->loadFont(fontpath, &err);
 	if (Game.font == NULL)
@@ -40,7 +40,7 @@ void InitGame(PlaydateAPI* pd)
 
     initLockSceneData();
 
-	sound->fileplayer->play(Game.musicPlayer, 0);
+	//sound->fileplayer->play(Game.musicPlayer, 0);
 }
 
 int Update(void* userdata) {

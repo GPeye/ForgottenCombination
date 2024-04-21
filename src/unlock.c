@@ -28,11 +28,26 @@ static void handleCrankRotate(void) {
     }*/
 }
 
+static char* score;
+static int ww = 0;
+int scorewidth = 0;
+static void displayScore(void) {
+    gfx->setFont(Game.font);
+    ww = sys->formatString(&score, "%d", 12);
+    scorewidth = gfx->getTextWidth(Game.font, score, strlen(score), kASCIIEncoding, 0);
+    gfx->setDrawMode(kDrawModeCopy);
+    gfx->drawText(score, strlen(score), kASCIIEncoding, 20, 20);
+    gfx->setDrawMode(kDrawModeCopy);
+    sys->realloc(score, 0);
+}
+
 void updateUnlock(void) {
     //drawBG();
     handleCrankRotate();
     DrawLock(&lock);
     UpdateLock(&lock);
+
+    displayScore();
     //drawKnob();
     //drawFace();
 }

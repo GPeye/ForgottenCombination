@@ -137,7 +137,7 @@ static void playSound(void) {
 
 static getCurrentNumber(){
     float num = 40.f - (angle / 9.f);
-    sys->logToConsole("%d",(int)round(num));
+    //sys->logToConsole("%d",(int)round(num));
     currentNumberOnDial = (int)round(num);
 }
 
